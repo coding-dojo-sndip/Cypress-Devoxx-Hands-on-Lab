@@ -1,6 +1,6 @@
 describe('Article page', function() {
-  context.only('In an anonymous context', function() {
-    it.only('should display the article page', function() {
+  context('In an anonymous context', function() {
+    it('should display the article page', function() {
       cy.server()
       // TODO intercept the XHR requests and stub responses to make test pass !
       cy.route('/api/articles/*', 'fixture:/article/cypress-is-cool.json')
@@ -25,7 +25,7 @@ describe('Article page', function() {
         .should('contain', 'JavaScript is cool too ! ❤️')
     })
 
-    it.only('should display nothing when the article is not found', function() {
+    it('should display nothing when the article is not found', function() {
       // TODO intercept the XHR requests and simulate a 404 error and see how your site behaves
       cy.server()
       cy.route('/api/articles/*', {status: 404})
@@ -35,7 +35,7 @@ describe('Article page', function() {
       cy.get('.navbar').should('exist')
     })
 
-    it.only('should display nothing when server internal error', function() {
+    it('should display nothing when server internal error', function() {
       // TODO intercept the XHR requests and simulate a 500 error and see how your site behaves
       cy.server()
       cy.route('/api/articles/internal-error*', {status: 500})
@@ -47,7 +47,7 @@ describe('Article page', function() {
       cy.get('.navbar').should('exist')
     })
 
-    it.only('should display after a long request', function() {
+    it('should display after a long request', function() {
       // TODO intercept the XHR requests and play with the 'delay' parameter to simulate differents response time
       // Ensure your settings are taking into account with your the dev tools !
       cy.server()
@@ -71,6 +71,7 @@ describe('Article page', function() {
       // TODO Login
       // You can first try with the login page
       // But with a custom command, it will be faster !
+      cy.login(Cypress.config().email, Cypress.config().password)
 
       cy.server()
       cy.route('/api/articles/*', 'fixture:/article/cypress-is-cool.json').as(

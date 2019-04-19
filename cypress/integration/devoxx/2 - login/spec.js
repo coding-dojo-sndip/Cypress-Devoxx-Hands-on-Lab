@@ -13,6 +13,8 @@ describe('Login page', function() {
   it('should display error message when empty email and password are submitted', function() {
     cy.visit('/login')
     // TODO submit the form and ensure the error message is displayed
+
+    cy.get('.btn[type=submit]').click();
   })
 
   it('should display error message when password is empty', function() {
