@@ -1,7 +1,13 @@
 describe('Article page', function() {
-  context('In an anonymous context', function() {
-    it('should display the article page', function() {
+  context.only('In an anonymous context', function() {
+    it.only('should display the article page', function() {
+      cy.server()
       // TODO intercept the XHR requests and stub responses to make test pass !
+      cy.route('/api/articles/*', 'fixture:/article/cypress-is-cool.json')
+        .as('article')
+      cy.route('/api/articles/*/comments', 'fixture:/comments/cypress-is-cool.json')
+        .as('comment')
+
       cy.visit('/article/cypress-is-cool-oni8y2')
       cy.get('h1').should('contain', 'Cypress is cool')
       cy.get('.author').should('contain', 'Brice')
@@ -19,23 +25,37 @@ describe('Article page', function() {
         .should('contain', 'JavaScript is cool too ! ❤️')
     })
 
-    it('should display nothing when the article is not found', function() {
+    it.only('should display nothing when the article is not found', function() {
       // TODO intercept the XHR requests and simulate a 404 error and see how your site behaves
+      cy.server()
+      cy.route('/api/articles/*', {status: 404})
+        .as('unknown-article')
 
       cy.visit('/article/unknown-oni8y2')
       cy.get('.navbar').should('exist')
     })
 
-    it('should display nothing when server internal error', function() {
+    it.only('should display nothing when server internal error', function() {
       // TODO intercept the XHR requests and simulate a 500 error and see how your site behaves
+      cy.server()
+      cy.route('/api/articles/internal-error*', {status: 500})
+        .as('article-internal-error')
+      cy.route('/api/articles/internal-error*/comments', {status: 500})
+        .as('comments-internal-error')
 
       cy.visit('/article/internal-error-oni8y2')
       cy.get('.navbar').should('exist')
     })
 
-    it('should display after a long request', function() {
+    it.only('should display after a long request', function() {
       // TODO intercept the XHR requests and play with the 'delay' parameter to simulate differents response time
       // Ensure your settings are taking into account with your the dev tools !
+      cy.server()
+      cy.route({
+        url: '/api/articles/*',
+        response: 'fixture:/article/cypress-is-cool.json',
+        delay: 500,
+      }).as('article-delayed')
 
       cy.visit('/article/article2-oni8y2')
       cy.get('h1').should('contain', 'Cypress is cool')
